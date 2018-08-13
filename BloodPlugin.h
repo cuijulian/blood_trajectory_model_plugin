@@ -14,9 +14,24 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/Vec3>
-
+#include <vector>
 
 using namespace opencover;
+
+class ParticleData
+{
+
+public:
+    ParticleData();
+    ~ParticleData();
+    void moveForward();
+
+    osg::Vec3 velocity;
+    osg::Vec3 position;
+    osg::ref_ptr<osg::MatrixTransform> transformNode;
+    osg::Matrix matrix;
+    bool onHand = true;
+};
 
 class BloodPlugin : public coVRPlugin
 {
@@ -25,18 +40,34 @@ private:
 public:
     static BloodPlugin *plugin;
 
-
+    //Global pointers for plugin objects
     osg::ref_ptr<osg::StateSet> stateset;
     osg::ref_ptr<osg::Material> linemtl;
     osg::ref_ptr<osg::Geometry> geom;
     osg::ref_ptr<osg::Geode> geode;
-    osg::ref_ptr<osg::MatrixTransform> trans;
-    osg::Vec3 v;
-    osg::Vec3 pos;
+
+    std::vector <ParticleData*> particles;
+
+    int numOfDroplets;
+
+    //Useful velocity variables
+    osg::Vec3 currentHandPosition;
+    osg::Vec3 previousHandPosition;
+
+    osg::Vec3 handShift;
     
+    osg::Vec3 gravity;
+
+    //Plugin constructor
     BloodPlugin();
+
+    //Plugin destructor
     virtual ~BloodPlugin();
+
+    //Plugin initializer
     bool init();
+
+    //Called every frame load
     bool update();
 };
 
